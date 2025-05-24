@@ -1,3 +1,4 @@
+package dev.rama27;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -32,7 +33,6 @@ public class Main {
         }
   }
   private static void handleClient(Socket finalSocket){
-      while(true) {
           try (BufferedReader br=new BufferedReader(
                   new InputStreamReader(finalSocket.getInputStream())
           );
@@ -44,9 +44,15 @@ public class Main {
                   if(msg.equals("PING")){
                       os.write("+PONG\r\n".getBytes());
                   }
+                  if(msg.equals("ECHO")){
+                      String respHeader=br.readLine();
+                      String respBody=br.readLine();
+                      String response= respHeader+"\r\n"+respBody+"\r\n";
+                      os.write(response.getBytes());
+                  }
               }
           } catch (IOException e) {
-              throw new RuntimeException(e);
+              System.out.println("client exited i guess"+e.getMessage());
           }
           finally{
               try{
@@ -58,7 +64,6 @@ public class Main {
                   System.err.println("IO EXCEPTION WHEN CLOSING : "+ ie.getMessage());
               }
           }
-      }
 
   }
 }
