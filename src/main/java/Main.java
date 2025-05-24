@@ -1,35 +1,24 @@
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Main {
   public static void main(String[] args){
-    // You can use print statements as follows for debugging, they'll be visible when running tests.
     System.out.println("Logs from your program will appear here!");
 
-    //  Uncomment this block to pass the first stage
         ServerSocket serverSocket = null;
         Socket clientSocket = null;
         int port = 6379;
         try {
           serverSocket = new ServerSocket(port);
-          // Since the tester restarts your program quite often, setting SO_REUSEADDR
-          // ensures that we don't run into 'Address already in use' errors
           serverSocket.setReuseAddress(true);
-          // Wait for connection from client.
-          clientSocket = serverSocket.accept();
 
-          InputStream is= clientSocket.getInputStream();
-            OutputStream os=clientSocket.getOutputStream();
           while(true){
-              byte[]input= new byte[1024];
-              is.read(input);
-              String inputString=new String(input).trim();
-              System.out.println("Received :"+inputString);
-              os.write("+PONG\r\n".getBytes());
+              clientSocket = serverSocket.accept();
+              Socket finalSocket=clientSocket;
+              new Thread(()-> handleClient(finalSocket)).start();
           }
+
         } catch (IOException e) {
           System.out.println("IOException: " + e.getMessage());
         } finally {
@@ -41,5 +30,35 @@ public class Main {
             System.out.println("IOException: " + e.getMessage());
           }
         }
+  }
+  private static void handleClient(Socket finalSocket){
+      while(true) {
+          try (BufferedReader br=new BufferedReader(
+                  new InputStreamReader(finalSocket.getInputStream())
+          );
+               OutputStream os = finalSocket.getOutputStream();
+          ) {
+              String msg;
+              while((msg=br.readLine())!=null){
+                  System.out.println("RECEIVED MSG: "+msg);
+                  if(msg.equals("PING")){
+                      os.write("+PONG\r\n".getBytes());
+                  }
+              }
+          } catch (IOException e) {
+              throw new RuntimeException(e);
+          }
+          finally{
+              try{
+                  finalSocket.close();
+                  System.out.println("client disconnected");
+              }
+
+              catch (IOException ie){
+                  System.err.println("IO EXCEPTION WHEN CLOSING : "+ ie.getMessage());
+              }
+          }
+      }
+
   }
 }
