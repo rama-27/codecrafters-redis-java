@@ -8,11 +8,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class CmdHandler   {
 
-    public static String ping() throws IOException {
+    public static String ping()  {
         return "+PONG\r\n";
     }
 
-    public static String echo(  String[] ss) throws IOException {
+    public static String echo(  String[] ss)   {
         String response = "";
         for (String s : ss) {
             if (s.equals("echo")) {
@@ -21,11 +21,10 @@ public class CmdHandler   {
             response += s;
         }
         response = "$" + response.length() + "\r\n" + response + "\r\n";
-        System.out.println("sending the respone: " + response);
         return response;
     }
 
-    public static String get(  String[] ss, ConcurrentHashMap<String, String> map) throws IOException {
+    public static String get(  String[] ss, ConcurrentHashMap<String, String> map) {
         if (!map.containsKey(ss[1])) {
 
             return "$-1\r\n";
@@ -42,7 +41,7 @@ public class CmdHandler   {
     }
 
     public static String set(  String[] ss,
-                           ConcurrentHashMap<String, String> map) throws IOException {
+                           ConcurrentHashMap<String, String> map)   {
         map.put(ss[1], ss[2]);
         return "+OK\r\n";
     }
