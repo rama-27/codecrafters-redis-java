@@ -8,11 +8,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class CmdHandler   {
 
-    public static void ping(Client client) throws IOException {
-        client.outputStream.write("+PONG\r\n".getBytes());
+    public static String ping() throws IOException {
+        return "+PONG\r\n";
     }
 
-    public static void echo(Client client,String[] ss) throws IOException {
+    public static String echo(  String[] ss) throws IOException {
         String response = "";
         for (String s : ss) {
             if (s.equals("echo")) {
@@ -21,33 +21,29 @@ public class CmdHandler   {
             response += s;
         }
         response = "$" + response.length() + "\r\n" + response + "\r\n";
-        client.outputStream.write(response.getBytes());
         System.out.println("sending the respone: " + response);
+        return response;
     }
 
-    public static void get(Client client, String[] ss, ConcurrentHashMap<String, String> map) throws IOException {
+    public static String get(  String[] ss, ConcurrentHashMap<String, String> map) throws IOException {
         if (!map.containsKey(ss[1])) {
-            client.outputStream.write("$-1\r\n".getBytes());
+
+            return "$-1\r\n";
         }
-        if (map.containsKey(ss[1])) {
+        else  {
             String response = "";
             response += "$";
             response += map.get(ss[1]).length();
             response += "\r\n";
             response += map.get(ss[1]);
             response += "\r\n";
-            client.outputStream.write(response.getBytes());
+            return response;
         }
     }
 
-    public static void set(Client client, String[] ss,
+    public static String set(  String[] ss,
                            ConcurrentHashMap<String, String> map) throws IOException {
         map.put(ss[1], ss[2]);
-        client.outputStream.write("+OK\r\n".getBytes());
-        if (ss.length > 3) {
-            ss[3] = ss[3].toLowerCase();
-            if (ss[3].equals("px")) {
-            }
-        }
+        return "+OK\r\n";
     }
 }

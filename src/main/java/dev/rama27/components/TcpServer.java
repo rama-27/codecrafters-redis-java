@@ -79,22 +79,23 @@ public class TcpServer {
     private void handleCmd(String[] ss, Client client) throws IOException {
         ss[0] = ss[0].toLowerCase();
         String t = ss[0];
-        String response;
+        String response = "";
         switch (t) {
             case "ping":
-                CmdHandler.ping(client);
+                response=CmdHandler.ping();
                 break;
             case "echo":
-                CmdHandler.echo(client,ss);
+                response=CmdHandler.echo(ss);
                 break;
             case "get":
-                CmdHandler.get(client,ss,map);
+                response=CmdHandler.get(ss,map);
 
                 break;
             case "set":
-                CmdHandler.set(client,ss,map);
+                 response=CmdHandler.set(ss,map);
 
                 break;
         }
+        client.outputStream.write(response.getBytes());
     }
 }
