@@ -14,10 +14,12 @@ public class TcpServer {
 
     @Autowired
     private RespSerializer respSerializer;
+    private CmdHandler cmdHandler;
 
     private ConcurrentHashMap<String,String> map;
-    TcpServer(RespSerializer respSerializer){
+    TcpServer(RespSerializer respSerializer, CmdHandler cmdHandler){
         this.respSerializer=respSerializer;
+        this.cmdHandler=cmdHandler;
         this.map=new ConcurrentHashMap<>();
     }
     public  void startServer() {
@@ -80,42 +82,18 @@ public class TcpServer {
         String response;
         switch (t) {
             case "ping":
-                client.outputStream.write("+PONG\r\n".getBytes());
+                CmdHandler.ping(client);
                 break;
             case "echo":
-                response = "";
-                for (String s : ss) {
-                    if (s.equals("echo")) {
-                        continue;
-                    }
-                    response += s;
-                }
-                response = "$" + response.length() + "\r\n" + response + "\r\n";
-                client.outputStream.write(response.getBytes());
-                System.out.println("sending the respone: " + response);
+                CmdHandler.echo(client,ss);
                 break;
             case "get":
-                if (!map.containsKey(ss[1])) {
-                    client.outputStream.write("$-1\r\n".getBytes());
-                }
-                if (map.containsKey(ss[1])) {
-                    response = "";
-                    response += "$";
-                    response += map.get(ss[1]).length();
-                    response += "\r\n";
-                    response += map.get(ss[1]);
-                    response += "\r\n";
-                    client.outputStream.write(response.getBytes());
-                }
+                CmdHandler.get(client,ss,map);
+
                 break;
             case "set":
-                map.put(ss[1], ss[2]);
-                client.outputStream.write("+OK\r\n".getBytes());
-                if (ss.length > 3) {
-                    ss[3] = ss[3].toLowerCase();
-                    if (ss[3].equals("px")) {
-                    }
-                }
+                CmdHandler.set(client,ss,map);
+
                 break;
         }
     }
