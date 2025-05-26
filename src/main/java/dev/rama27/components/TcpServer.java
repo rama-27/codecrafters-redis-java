@@ -1,11 +1,13 @@
 package dev.rama27.components;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.codec.ByteBufferEncoder;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -60,12 +62,13 @@ public class TcpServer {
         private  void handleClient (Client client) throws IOException {
 
             while (client.socket.isConnected()) {
-                byte[] buffer = new byte[client.socket.getReceiveBufferSize()];
-                int bytesRead = client.inputStream.read(buffer);
+//                byte[] buffer = new byte[client.socket.getReceiveBufferSize()];
+                ByteBuffer buffer1=ByteBuffer.allocate(client.socket.getReceiveBufferSize());
+                int bytesRead = client.inputStream.read(buffer1.array());
 
                 if (bytesRead > 0) {
                     // parse stuff here to strings i guess
-                    List<String[]> res=respSerializer.deserialize(buffer);
+                    List<String[]> res=respSerializer.deserialize(buffer1.array());
                     for(String[] ss:res){
                         handleCmd(ss,client);
                     }
@@ -95,5 +98,6 @@ public class TcpServer {
                 break;
         }
         client.outputStream.write(response.getBytes());
+        client.outputStream.flush();
     }
 }
