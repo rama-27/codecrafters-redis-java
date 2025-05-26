@@ -16,11 +16,9 @@ public class TcpServer {
     private RespSerializer respSerializer;
     private CmdHandler cmdHandler;
 
-    private ConcurrentHashMap<String,String> map;
     TcpServer(RespSerializer respSerializer, CmdHandler cmdHandler){
         this.respSerializer=respSerializer;
         this.cmdHandler=cmdHandler;
-        this.map=new ConcurrentHashMap<>();
     }
     public  void startServer() {
         ServerSocket serverSocket = null;
@@ -82,17 +80,17 @@ public class TcpServer {
         String response = "";
         switch (t) {
             case "ping":
-                response=CmdHandler.ping();
+                response=cmdHandler.ping();
                 break;
             case "echo":
-                response=CmdHandler.echo(ss);
+                response=cmdHandler.echo(ss);
                 break;
             case "get":
-                response=CmdHandler.get(ss,map);
+                response=cmdHandler.get(ss);
 
                 break;
             case "set":
-                 response=CmdHandler.set(ss,map);
+                 response=cmdHandler.set(ss);
 
                 break;
         }

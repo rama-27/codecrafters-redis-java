@@ -1,48 +1,50 @@
 package dev.rama27.components;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class CmdHandler   {
 
-    public static String ping()  {
+
+    Hashh hashh;
+    RespSerializer respSerializer;
+
+    CmdHandler(Hashh hashh,RespSerializer respSerializer){
+        this.hashh=hashh;
+        this.respSerializer=respSerializer;
+    }
+    public  String ping()  {
         return "+PONG\r\n";
     }
 
-    public static String echo(  String[] ss)   {
-        String response = "";
+    public  String echo(  String[] ss)   {
+        StringBuilder response = new StringBuilder();
         for (String s : ss) {
             if (s.equals("echo")) {
                 continue;
             }
-            response += s;
+            response.append(s);
         }
-        response = "$" + response.length() + "\r\n" + response + "\r\n";
-        return response;
+        response = new StringBuilder("$" + response.length() + "\r\n" + response + "\r\n");
+        return response.toString();
     }
 
-    public static String get(  String[] ss, ConcurrentHashMap<String, String> map) {
-        if (!map.containsKey(ss[1])) {
+    public  String get(  String[] ss) {
 
+        if(hashh.getValue(ss[1]).equals("null")){
             return "$-1\r\n";
         }
-        else  {
-            String response = "";
-            response += "$";
-            response += map.get(ss[1]).length();
-            response += "\r\n";
-            response += map.get(ss[1]);
-            response += "\r\n";
-            return response;
+        else{
+
+            return respSerializer.serialize(hashh.getValue(ss[1]));
         }
+
     }
 
-    public static String set(  String[] ss,
-                           ConcurrentHashMap<String, String> map)   {
-        map.put(ss[1], ss[2]);
+    public  String set(  String[] ss)   {
+        hashh.setValue(ss[1],ss[2]);
         return "+OK\r\n";
     }
 }

@@ -9,6 +9,15 @@ import java.util.List;
 @Component
 public class RespSerializer {
 
+    public  String serialize(String s){
+        String response = "$" +
+                s.length() +
+                "\r\n" +
+                s +
+                "\r\n";
+        return response;
+    }
+
 
     public List<String[]> deserialize(byte[] command){
         String data= new String(command, StandardCharsets.UTF_8);
