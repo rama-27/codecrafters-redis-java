@@ -44,7 +44,13 @@ public class CmdHandler   {
     }
 
     public  String set(  String[] ss)   {
-        hashh.setValue(ss[1],ss[2]);
-        return "+OK\r\n";
+        if(ss.length==3) {
+            String s = hashh.setValue(ss[1], ss[2]);
+            return "+" + s + "\r\n";
+        }
+        else{
+            String s= hashh.setValue(ss[1],ss[2], Integer.parseInt(ss[4]));
+            return "+" + s + "\r\n";
+        }
     }
 }

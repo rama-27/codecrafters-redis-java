@@ -2,6 +2,7 @@ package dev.rama27.components;
 
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -34,5 +35,12 @@ public class Hashh {
         map.put(key,val);
         return "OK";
     }
+    public  String setValue(String key,String value,long time) {
+        time=time*1_000_000;
+        Value val = new Value(value, LocalTime.now(), LocalTime.now().plusNanos((time)));
+        map.put(key, val);
+        return "OK";
+    }
 
-}
+
+    }

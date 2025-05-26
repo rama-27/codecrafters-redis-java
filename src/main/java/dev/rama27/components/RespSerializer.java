@@ -10,12 +10,7 @@ import java.util.List;
 public class RespSerializer {
 
     public  String serialize(String s){
-        String response = "$" +
-                s.length() +
-                "\r\n" +
-                s +
-                "\r\n";
-        return response;
+        return "$" + s.length() + "\r\n" + s + "\r\n";
     }
 
 
@@ -33,28 +28,28 @@ public class RespSerializer {
                 break;
             }
             if(curr=='*'){
-                String arrLen="";
+                StringBuilder arrLen= new StringBuilder();
                 idx++;
                 while(idx< dataArr.length && Character.isDigit(dataArr[idx])){
-                    arrLen+=dataArr[idx++];
+                    arrLen.append(dataArr[idx++]);
                 }
                 idx+=2;
 
                 if(dataArr[idx]=='*'){
-                    for(int i=0;i<Integer.parseInt(arrLen);i++){
-                        String nextedLen="";
+                    for(int i = 0; i<Integer.parseInt(arrLen.toString()); i++){
+                        StringBuilder nextedLen= new StringBuilder();
                         idx++;
                         while(idx<dataArr.length && Character.isDigit(dataArr[idx])){
-                            nextedLen+=dataArr[idx++];
+                            nextedLen.append(dataArr[idx++]);
                         }
                         idx+=2;
-                        String[] subArray=new String[Integer.parseInt(nextedLen)];
+                        String[] subArray=new String[Integer.parseInt(nextedLen.toString())];
                         idx= getParts(dataArr,idx,subArray);
                         response.add(subArray);
                     }
                 }
                 else{
-                    String[] subArray=new String[Integer.parseInt(arrLen)];
+                    String[] subArray=new String[Integer.parseInt(arrLen.toString())];
                     idx= getParts(dataArr,idx,subArray);
                     response.add(subArray);
 
@@ -69,17 +64,17 @@ public class RespSerializer {
         while(idx<dataArr.length && j<subArray.length){
             if(dataArr[idx]== '$'){
                 idx++;
-                String partLen="";
+                StringBuilder partLen= new StringBuilder();
                 while(idx<dataArr.length && Character.isDigit(dataArr[idx])){
-                    partLen+=dataArr[idx++];
+                    partLen.append(dataArr[idx++]);
                 }
                 idx+=2;
-                String part= "";
-                for(int k=0;k<Integer.parseInt(partLen);k++){
-                    part+=dataArr[idx++];
+                StringBuilder part= new StringBuilder();
+                for(int k = 0; k<Integer.parseInt(partLen.toString()); k++){
+                    part.append(dataArr[idx++]);
                 }
                 idx+=2;
-                subArray[j++]=part;
+                subArray[j++]= part.toString();
             }
         }
 
