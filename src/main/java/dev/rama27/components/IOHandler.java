@@ -10,13 +10,13 @@ import java.nio.channels.SocketChannel;
 import java.util.List;
 
 @Component
-public class NioIOStreamsIG {
+public class IOHandler {
 
     private  final CmdHandler cmdHandler;
     private final RespSerializer respSerializer;
     private int count=0;
 
-    NioIOStreamsIG(CmdHandler cmdHandler,RespSerializer respSerializer){
+    IOHandler(CmdHandler cmdHandler, RespSerializer respSerializer){
         this.respSerializer=respSerializer;
         this.cmdHandler = cmdHandler;
     }
@@ -50,9 +50,7 @@ public class NioIOStreamsIG {
         } catch (IOException e) {
             System.out.println("EXCEption at BytesReadBuffer in HanldeRead"+e.getMessage());
         }
-        finally{
-            socketChannel.close();
-        }
+        
         
 
     } private void handleCmd(String[] ss, ClientHandle clientHandle) throws IOException {
@@ -72,10 +70,13 @@ public class NioIOStreamsIG {
                 break;
             case "set":
                 response=cmdHandler.set(ss);
-
+                break;
+            case"config":
+                response=cmdHandler.configCmd(ss);
                 break;
         }
-        clientHandle.socketChannel.write(ByteBuffer.wrap(response.getBytes()));
+        clientHandle.writeBuffer=ByteBuffer.wrap(response.getBytes());
+        clientHandle.socketChannel.write(clientHandle.writeBuffer);
         clientHandle.socketChannel.close();
     }
 }

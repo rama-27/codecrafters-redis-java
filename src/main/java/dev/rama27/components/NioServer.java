@@ -1,6 +1,5 @@
 package dev.rama27.components;
 
-import org.springframework.boot.autoconfigure.rsocket.RSocketProperties;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -13,10 +12,10 @@ import java.util.Set;
 
 @Component
 public class NioServer {
-    private final NioIOStreamsIG nioIOStreamsIG;
+    private final IOHandler IOHandler;
 
-    NioServer(NioIOStreamsIG nioIOStreamsIG){
-        this.nioIOStreamsIG = nioIOStreamsIG;
+    NioServer(IOHandler IOHandler){
+        this.IOHandler = IOHandler;
     }
     public static final int PORT =6379;
 
@@ -49,14 +48,15 @@ public class NioServer {
 
                 if(key.isAcceptable()){
 
-                    nioIOStreamsIG.handleAccept(key,selector);
+                    IOHandler.handleAccept(key,selector);
                    // handle key
                 }
                 else if(key.isReadable()){
 
-                    nioIOStreamsIG.handleRead(key,selector);
+                    IOHandler.handleRead(key,selector);
                     // handle key
                 }
+
 
                 selectionKeyIterator.remove();
 

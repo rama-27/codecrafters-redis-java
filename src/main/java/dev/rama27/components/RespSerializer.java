@@ -13,6 +13,29 @@ public class RespSerializer {
         return "$" + s.length() + "\r\n" + s + "\r\n";
     }
 
+    public String serialize(String[] s){
+        String res="";
+        int len=s.length;
+
+        res+="*";
+        res+=len;
+        res+="\r\n";
+        int idx=0;
+
+        while(len>0  ){
+            res+="$"+s[idx].length();
+            res+="\r\n";
+            res+=s[idx];
+            idx++;
+            len--;
+            res+="\r\n";
+        }
+
+        return res;
+
+
+    }
+
 
     public List<String[]> deserialize(byte[] command){
         String data= new String(command, StandardCharsets.UTF_8);
