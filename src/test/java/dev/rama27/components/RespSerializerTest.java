@@ -31,4 +31,15 @@ class RespSerializerTest {
         assertArrayEquals(exp2, response.getLast());
     }
 
+    @Test
+    public void testSerializingStringArray(){
+        String[] ss={"dir","/tmp/redis-files"};
+
+        String expected="*2\r\n$3\r\ndir\r\n$16\r\n/tmp/redis-files\r\n";
+        String actual=respSerializer.serialize(ss);
+        System.out.println("actual === "+actual);
+        System.out.println("expected === "+expected);
+        assertEquals(expected,actual);
+    }
+
 }
