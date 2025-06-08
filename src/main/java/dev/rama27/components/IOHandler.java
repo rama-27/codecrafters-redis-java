@@ -77,6 +77,5 @@ public class IOHandler {
         }
         clientHandle.writeBuffer=ByteBuffer.wrap(response.getBytes());
         clientHandle.socketChannel.write(clientHandle.writeBuffer);
-        clientHandle.socketChannel.close();
     }
 }
