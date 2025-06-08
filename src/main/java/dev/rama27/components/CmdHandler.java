@@ -74,7 +74,7 @@ public class CmdHandler   {
 //            Files.createDirectories(Path.of(ss[1]));
 //             Files.createFile(filePath );
 //            Process process= Runtime.getRuntime().exec("chmod 777 "+filePath);
-////             Files.setAttribute(filePath, "dos:write",true);
+//             Files.setAttribute(filePath, "dos:write",true);
 //            System.out.println("File created ");
 //        }
 //        catch (IOException ie){
