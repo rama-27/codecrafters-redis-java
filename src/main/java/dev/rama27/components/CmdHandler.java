@@ -11,7 +11,7 @@ public class CmdHandler   {
     RespSerializer respSerializer;
     DataMaps dataMaps;
 
-    CmdHandler(Hashh hashh,RespSerializer respSerializer, DataMaps dataMaps){
+    CmdHandler(Hashh hashh,RespSerializer respSerializer){
         this.hashh=hashh;
         this.respSerializer=respSerializer;
         this.dataMaps=dataMaps;
