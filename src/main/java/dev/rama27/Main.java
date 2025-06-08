@@ -8,11 +8,6 @@ import java.io.IOException;
 public class Main {
   public static void main(String[] args) throws IOException {
 
-
-
-
-
-
     System.out.println("Logs from your program will appear here!");
     AnnotationConfigApplicationContext context=new AnnotationConfigApplicationContext(Appconfig.class);
     NioServer app=context.getBean(NioServer.class);
